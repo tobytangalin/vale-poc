@@ -1,0 +1,8 @@
+extends: substitution
+message: Use '%s' instead of '%s'. Don't use start page
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  home page: homepage

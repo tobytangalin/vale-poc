@@ -1,0 +1,15 @@
+extends: substitution
+message: 'Avoid using may when you want to talk about the possibility of something.
+  Use might instead. Avoid using may when you want to talk about permission, or the
+  ability to do something. Use can instead. May is potentially confusing for non-native
+  English speakers, because it can express that something is possible, but can also
+  give permission to do something. For example: customer form entries may contain
+  personal data. It is not clear whether this means it is possible that (some) form
+  entries contain personal data, or it is permitted for any form entry to contain
+  personal data.'
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  may: might|can

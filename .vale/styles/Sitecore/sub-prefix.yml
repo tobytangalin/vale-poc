@@ -1,0 +1,12 @@
+extends: substitution
+message: Don't hyphenate words beginning with the sub prefix.
+level: error
+ignorecase: true
+action:
+  name: replace
+swap:
+  sub-page: subpage
+  sub-item: subitem
+  sub-class: subclass
+  sub-layout: sublayout
+  sub-report: subreport

@@ -1,0 +1,9 @@
+extends: substitution
+message: Don't use this term. Refer to the option button by its label instead.
+level: error
+ignorecase: true
+action:
+  name: replace
+swap:
+  radiobutton: ''
+  radio button: ''

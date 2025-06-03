@@ -1,0 +1,7 @@
+extends: existence
+message: Don't use toggle as a verb to refer to toggling a switch on and off. Write
+  click, turn on or turn off instead. Don't use toggle as a noun. Write switch instead.
+level: warning
+ignorecase: true
+tokens:
+- toggle

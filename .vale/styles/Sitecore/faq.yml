@@ -1,0 +1,8 @@
+extends: substitution
+message: Don't use FAQ or FAQs in text as a shorthand way of referring to questions
+  that are commonly asked.
+level: suggestion
+ignorecase: true
+swap:
+  FAQ: ''
+  FAQs: ''

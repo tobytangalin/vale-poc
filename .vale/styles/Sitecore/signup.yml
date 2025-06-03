@@ -1,0 +1,8 @@
+extends: substitution
+message: Don't use as a noun (for example, a customer signup), use registration instead.
+level: error
+ignorecase: true
+action:
+  name: replace
+swap:
+  customer signup: customer registration

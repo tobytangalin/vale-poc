@@ -1,0 +1,10 @@
+extends: substitution
+message: Use want instead of wish or desire when the customer has a choice of actions.
+  Don't use want when you mean need, which indicates a requirement or obligation.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  wish: want
+  desire: want

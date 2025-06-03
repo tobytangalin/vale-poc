@@ -1,0 +1,9 @@
+extends: substitution
+message: Don't refer to whitespaces - instead write whitespace characters.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  whitespace: whitespace character
+  whitespaces: whitespace characters

@@ -1,0 +1,13 @@
+extends: substitution
+message: Use '%s' when referring to types of '%s' files by name.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  config: .config|a configuration file or a config file
+  CSS: .css|a CSS file
+  GIF: .gif|a GIF file
+  JPEG: .jpg|a JPEG file
+  PNG: .png|a PNG file
+  ZIP: .zip|a ZIP file

@@ -1,0 +1,9 @@
+extends: substitution
+message: When you remove a checkmark from a check box, use the word '%s'. Do not use
+  deselect, turn off, or unmark. instead of '%s'.
+level: error
+ignorecase: true
+action:
+  name: replace
+swap:
+  deselect|turn off|unmark: clear

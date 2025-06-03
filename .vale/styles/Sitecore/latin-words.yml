@@ -1,0 +1,12 @@
+extends: substitution
+message: Do not use Latin words and abbreviations for common English words. Use '%s'
+  instead of '%s'.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  e.g: example
+  i.e: that is
+  etc: and so on
+  ergo: therefore

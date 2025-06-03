@@ -1,0 +1,7 @@
+extends: substitution
+message: You can use per to mean for each in statistical or technical contexts. In
+  all other cases, use a or for each instead, or reword.
+level: warning
+ignorecase: true
+swap:
+  per: ''

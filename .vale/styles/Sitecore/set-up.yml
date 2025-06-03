@@ -1,0 +1,7 @@
+extends: substitution
+message: Setup is a noun (thing). To set up is a verb (action).
+level: warning
+ignorecase: true
+swap:
+  setup: ''
+  set up: ''

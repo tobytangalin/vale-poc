@@ -1,0 +1,12 @@
+extends: substitution
+message: 'Don''t hyphenate: don''t write e-mail. After you have established the context
+  of electronic mail, it is acceptable to use mail instead of email. Use email message
+  or message to refer to an individual piece of email. Do not use email as a synonym
+  for message. If you use message alone, ensure that the context makes clear that
+  you are not referring to instant messaging.'
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  e-mail: email

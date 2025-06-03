@@ -1,0 +1,10 @@
+extends: substitution
+message: Use '%s' instead of '%s' to refer to the release numbers for all versions
+  of a product that precede a particular release.
+level: suggestion
+ignorecase: false
+action:
+  name: replace
+swap:
+  or less|or lower: or earlier
+  and less|and lower: and earlier

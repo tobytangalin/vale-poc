@@ -1,0 +1,6 @@
+extends: substitution
+message: Always use as singular. Do not use datum or data are...
+level: suggestion
+ignorecase: true
+swap:
+  data: ''

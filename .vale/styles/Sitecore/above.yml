@@ -1,0 +1,7 @@
+extends: substitution
+message: Avoid above when you are referring to items in text. Use '%s' instead of
+  '%s'.
+level: warning
+ignorecase: true
+swap:
+  above: previous|preceding|earlier

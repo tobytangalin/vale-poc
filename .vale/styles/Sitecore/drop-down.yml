@@ -1,0 +1,9 @@
+extends: substitution
+message: Avoid using drop-down as a noun or verb. It is an adjective and describes
+  a list or menu.
+level: suggestion
+ignorecase: true
+action:
+  name: replace
+swap:
+  dropdown: drop-down

@@ -1,0 +1,8 @@
+extends: substitution
+message: Launchpad is one word (not two) and capitalized, as it's a specific product.
+level: suggestion
+ignorecase: true
+action:
+  name: replace
+swap:
+  launchpad: Launchpad

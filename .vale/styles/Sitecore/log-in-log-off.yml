@@ -1,0 +1,13 @@
+extends: substitution
+message: 'Use log in or log in to (not log into) to refer to creating a Sitecore user
+  session. The verb form is two words, log in or log off. As a noun or adjective,
+  use one word, no hyphen: login or logoff.'
+level: warning
+ignorecase: true
+swap:
+  login: ''
+  log in: ''
+  log in to: ''
+  log into: ''
+  log off: ''
+  logoff: ''

@@ -1,0 +1,17 @@
+extends: substitution
+message: Avoid using '%s'.
+level: error
+ignorecase: true
+swap:
+  go the extra mile: ''
+  back on track: ''
+  going forward: ''
+  touch base: ''
+  think outside the box: ''
+  the big picture: ''
+  to populate an idea: ''
+  to take something to the next level: ''
+  in a nutshell: ''
+  ballpark figure: ''
+  mission critical: ''
+  win-win situation: ''

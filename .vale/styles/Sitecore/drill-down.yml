@@ -1,0 +1,9 @@
+extends: substitution
+message: Write this as a hyphenated word when it is an adjective, but two words when
+  it is a verb. Do not use drill-down as a noun.
+level: suggestion
+ignorecase: true
+action:
+  name: replace
+swap:
+  drilldown: drill-down|drill down

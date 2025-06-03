@@ -1,0 +1,9 @@
+extends: substitution
+message: It is acceptable to write internet with a lowercase i. Don't capitalize intranet.
+level: suggestion
+ignorecase: true
+action:
+  name: replace
+swap:
+  Internet: internet
+  Intranet: intranet

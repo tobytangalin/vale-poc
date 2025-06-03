@@ -1,0 +1,7 @@
+extends: substitution
+message: Use fill out for an entire form. Use fill in for individual fields.
+level: suggestion
+ignorecase: true
+swap:
+  fill in: ''
+  fill out: ''

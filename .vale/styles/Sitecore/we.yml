@@ -1,0 +1,8 @@
+extends: existence
+message: You can use we to refer to Sitecore, for example if you are making a recommendation
+  or suggestion to the user. This avoids you having to write such sentences in the
+  passive voice. Avoid using we to mean yourself (or Sitecore) together with the reader.
+level: warning
+ignorecase: true
+tokens:
+- we

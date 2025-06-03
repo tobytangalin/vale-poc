@@ -1,0 +1,10 @@
+extends: substitution
+message: Avoid using the term allow, unless you are referring to features such as
+  security that permit or deny action. Use '%s' instead of '%s'.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  allows: can|lets|enables
+  allow: can|lets|enables

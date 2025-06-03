@@ -1,0 +1,7 @@
+extends: substitution
+message: Only use choose to refer to the user making a decision. Do not use choose
+  as an alternative to select, click, or double-click.
+level: warning
+ignorecase: true
+swap:
+  choose: ''

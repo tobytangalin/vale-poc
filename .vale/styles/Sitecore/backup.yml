@@ -1,0 +1,9 @@
+extends: substitution
+message: Write back up as two words as a verb. Write backup as one word as an adjective
+  or a noun.
+level: suggestion
+ignorecase: true
+action:
+  name: replace
+swap:
+  backup: back up

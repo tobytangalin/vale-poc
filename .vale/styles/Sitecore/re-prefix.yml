@@ -1,0 +1,10 @@
+extends: substitution
+message: In general, do not hyphenate words beginning with the re prefix. Some exceptions
+  do exist to this. Check Merriam Webster's dictionary if in doubt.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  re-enter: reenter
+  re-apply: reapply

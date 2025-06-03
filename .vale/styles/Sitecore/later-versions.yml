@@ -1,0 +1,12 @@
+extends: substitution
+message: Use '%s' instead of '%s' to refer to multiple version numbers for software
+  releases. 'or later' might imply that the functionality or feature discussed will
+  be included or supported in all future releases. If you are not sure, list each
+  applicable version instead.
+level: suggestion
+ignorecase: false
+action:
+  name: replace
+swap:
+  or greater|or newer|or higher: or later
+  and greater|and newer|and higher: and later

@@ -1,0 +1,10 @@
+extends: substitution
+message: Try to avoid writing about roles in general terms. Use role to refer to the
+  permissions or access rights that you assign to users or groups of users, or to
+  system roles. Don't capitalize the word role.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  Role: role

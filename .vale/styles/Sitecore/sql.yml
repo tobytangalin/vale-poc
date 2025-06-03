@@ -1,0 +1,8 @@
+extends: existence
+message: 'SQL is pronounced both ''es-cue-el'' (for Structured Query Language)
+  and ''sequel'' (for the product or the server): an SQL database but a
+  SQL Server.'
+level: warning
+ignorecase: true
+tokens:
+- SQL

@@ -1,0 +1,9 @@
+extends: substitution
+message: Use 'functionality' with caution. Used incorrectly, it comes across as business
+  jargon. Functionality means the collection of functions that form the software.
+  Do not use functionality when you mean functions or features. Avoid using functionality
+  in the plural (functionalities), use functions instead.
+level: warning
+ignorecase: true
+swap:
+  functionality: ''

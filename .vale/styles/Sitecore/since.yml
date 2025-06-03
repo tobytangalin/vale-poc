@@ -1,0 +1,8 @@
+extends: substitution
+message: Avoid using since to mean because. It can result in ambiguity. Use because
+  to refer to a reason, and since to refer to a point in time in the past.
+level: suggestion
+ignorecase: true
+swap:
+  since: ''
+  because: ''

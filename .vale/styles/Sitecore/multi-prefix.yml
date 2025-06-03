@@ -1,0 +1,12 @@
+extends: substitution
+message: Words starting with the multi prefix are usually one word. Exceptions are
+  words starting with an i, and in the term multi-factor authentication (MFA).
+level: warning
+ignorecase: true
+swap:
+  multi-channel: multichannel
+  multi-site: multisite
+  multi-brand: multibrand
+  multi-language: multilanguage
+  multiindustry: multi-industry
+  multifactor authentication: multi-factor authentication

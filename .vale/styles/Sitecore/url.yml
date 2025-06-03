@@ -1,0 +1,10 @@
+extends: substitution
+message: Write a URL, not an URL. Write URL, not url.
+level: warning
+ignorecase: false
+action:
+  name: replace
+swap:
+  an URL: a URL
+  a url: a URL
+  an url: a URL

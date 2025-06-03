@@ -1,0 +1,15 @@
+extends: substitution
+message: Don't capitalize web. Write website, webpage, and webshop as one word.
+level: warning
+ignorecase: false
+action:
+  name: replace
+swap:
+  Web: web
+  web site: website
+  Website: website
+  Web site: website
+  Web page: webpage
+  Webpage: webpage
+  Webshop: webshop
+  Web shop: webshop

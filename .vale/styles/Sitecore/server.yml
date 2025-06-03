@@ -1,0 +1,7 @@
+extends: substitution
+message: Don't capitalize the name of the server, unless it's a proper name. We don't
+  usually capitalize the word server when it's part of the name.
+level: warning
+ignorecase: true
+swap:
+  Server: ''

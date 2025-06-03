@@ -1,0 +1,9 @@
+extends: substitution
+message: Don't refer to the hamburger icon. Refer to the System menu, with an in-line
+  thumbnail image.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  hamburger: System menu

@@ -1,0 +1,8 @@
+extends: substitution
+message: Write as two words unless you are describing a property.
+level: suggestion
+ignorecase: true
+action:
+  name: replace
+swap:
+  datasource: data source

@@ -1,0 +1,14 @@
+extends: substitution
+message: Do not hyphenate words beginning with non unless leaving it out can cause
+  confusion.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  non-payment: nonpayment
+  nonexistent: non-existent
+  nonnative: non-native
+  non-interactive: noninteractive
+  nonbranded: non-branded
+  noneditable: non-editable

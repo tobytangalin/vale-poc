@@ -1,0 +1,7 @@
+extends: existence
+message: Don't write click on, just write click. For check boxes, don't write click.
+  Write select or clear.
+level: warning
+ignorecase: true
+tokens:
+- click on

@@ -1,0 +1,9 @@
+extends: substitution
+message: Hyphenate when used as an adjective. Do not write 3rd party.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  third party: third-party
+  3rd party: third-party

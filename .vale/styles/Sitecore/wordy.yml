@@ -1,0 +1,16 @@
+extends: substitution
+message: '''%s'' can usually be deleted.'
+level: error
+ignorecase: true
+swap:
+  very: ''
+  quite: ''
+  extremely: ''
+  as it were: ''
+  basically: ''
+  essentially: ''
+  totally: ''
+  completely: ''
+  moreover: ''
+  at the present moment in time: ''
+  it should be noted that: ''

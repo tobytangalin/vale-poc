@@ -1,0 +1,6 @@
+extends: substitution
+message: Always use '%s' instead of '%s'.
+level: error
+ignorecase: true
+swap:
+  boolean: Boolean

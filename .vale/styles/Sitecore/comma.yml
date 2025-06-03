@@ -1,0 +1,6 @@
+extends: existence
+message: Use the Oxford comma in '%s'.
+level: warning
+scope: sentence
+tokens:
+- (?:[^,]+,){1,}\s\w+\sand

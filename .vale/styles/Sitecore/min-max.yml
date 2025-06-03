@@ -1,0 +1,10 @@
+extends: substitution
+message: Always use maximum and minimum as full words. To avoid misinterpretation,
+  don't use the max and min abbreviations. For example, min could also mean minutes.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  min: minimum
+  max: maximum

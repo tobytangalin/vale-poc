@@ -1,0 +1,11 @@
+extends: substitution
+message: Always write as two words, and hyphenate them if used as an adjective - for
+  example, a back-end e-commerce system. Don't use these terms in business user documentation.
+  Instead of front end - use portal, interface, page, website, and so on. Instead
+  of back end - use the product or feature name, such as Content Editor, User Manager,
+  Media Library, and so on.
+level: warning
+ignorecase: true
+swap:
+  backend: back end|back-end
+  frontend: front end|front-end

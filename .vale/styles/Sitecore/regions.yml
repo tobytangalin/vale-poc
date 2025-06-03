@@ -1,0 +1,10 @@
+extends: substitution
+message: Write U.S. and U.K. but EU without periods.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  US: U.S.
+  UK: U.K.
+  E.U.: EU

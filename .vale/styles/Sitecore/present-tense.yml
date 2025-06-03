@@ -1,0 +1,9 @@
+extends: substitution
+message: Use the present tense wherever possible. Avoid writing that a user will have
+  to do something when you can just give the instruction directly. However, to achieve
+  a more friendly tone, you can use will where it feels natural and when you are describing
+  something that happens in the future.
+level: suggestion
+ignorecase: true
+swap:
+  will: ''

@@ -1,0 +1,12 @@
+extends: substitution
+message: Unless it is necessary to avoid confusion, do not hyphenate words beginning
+  with pre.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  pre-allocate: preallocate
+  pre-defined: predefined
+  pre-requisites: prerequisites
+  pre-render: prerender

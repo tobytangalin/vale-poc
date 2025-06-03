@@ -1,0 +1,10 @@
+extends: substitution
+message: As a noun, use plugin, not plug-in or plug in.
+level: error
+ignorecase: true
+action:
+  name: replace
+swap:
+  plugin: ''
+  plug-in: ''
+  plug in: ''

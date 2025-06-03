@@ -1,0 +1,9 @@
+extends: substitution
+message: Check box is written as two words. Checkbox (as one word) for controls is
+  acceptable.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  checkbox: check box

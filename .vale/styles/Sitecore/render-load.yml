@@ -1,0 +1,11 @@
+extends: substitution
+message: For non-technical business user documentation, use render for graphic elements,
+  and use load for websites and web pages. For developer documentation, you can use
+  render for both contexts.
+level: warning
+ignorecase: true
+swap:
+  render: ''
+  load: ''
+  renders: ''
+  loads: ''
