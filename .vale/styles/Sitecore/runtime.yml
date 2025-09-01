@@ -1,7 +1,7 @@
 extends: substitution
 message: Two words when referring to the time during which an application is running.
   Runtime (one word) is an adjective.
-level: warning
+level: suggestion
 ignorecase: true
 swap:
   run time: ''
