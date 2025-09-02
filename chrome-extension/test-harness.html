@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vale Extension Test Harness</title>
+  <style>
+    body { font: 14px/1.4 system-ui, sans-serif; margin: 1.5rem; }
+    section { margin-bottom: 2rem; }
+    h2 { margin: 0 0 .5rem; font-size: 1.1rem; }
+    textarea, input, [contenteditable] { width: 100%; max-width: 720px; box-sizing: border-box; font: 14px/1.3 system-ui,sans-serif; padding: .5rem; border: 1px solid #ccc; border-radius: 4px; }
+    [contenteditable] { min-height: 140px; }
+    .note { color: #555; font-size: .85rem; margin-top: .25rem; }
+    code { background:#f4f4f4; padding:2px 4px; border-radius:3px; }
+  </style>
+</head>
+<body>
+  <h1>Vale Prototype Extension Test Harness</h1>
+  <p>Type or paste phrases like <code>utilize</code>, <code>due to the fact that</code>, <code>persons</code>, <code>at the present time</code> to trigger highlights and quick-fix actions.</p>
+
+  <section>
+    <h2>ContentEditable Region (Quick-Fix on Click)</h2>
+    <div id="ce" contenteditable="true">Type text here to test the contenteditable quick-fix. For example: We will utilize these persons at the present time.</div>
+    <div class="note">Click a highlighted phrase to replace it.</div>
+  </section>
+
+  <section>
+    <h2>Textarea (Overlay Quick-Fix + Undo)</h2>
+    <textarea id="ta" rows="6">Paste or type here: due to the fact that we utilize persons, we will consequently improve.</textarea>
+    <div class="note">Click highlighted overlay text to apply replacement. Undo: Ctrl+Alt+Z.</div>
+  </section>
+
+  <section>
+    <h2>Input Field (Overlay Quick-Fix)</h2>
+    <input id="inp" type="text" value="We will attempt to utilize persons." />
+    <div class="note">Click highlighted overlay text to apply replacement. Undo: Ctrl+Alt+Z.</div>
+  </section>
+
+  <section>
+    <h2>Engine Status</h2>
+    <button id="lintStatus">Check Current Engine (WASM vs Fallback)</button>
+    <pre id="statusOut" style="background:#111;color:#0f0;padding:.75rem;max-width:720px;overflow:auto;">(click button)</pre>
+  </section>
+
+  <script>
+    document.getElementById('lintStatus').addEventListener('click', () => {
+      const active = document.activeElement;
+      const sample = (active && (active.isContentEditable ? active.innerText : active.value)) || 'utilize persons';
+      chrome.runtime.sendMessage({ type: 'LINT', text: sample }, resp => {
+        document.getElementById('statusOut').textContent = JSON.stringify(resp, null, 2);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Vale Native (Prototype)",
+  "description": "Prototype: applies simplified Vale substitution rules to editable text.",
+  "version": "0.1.0",
+  "permissions": ["storage"],
+  "host_permissions": ["https://sitecore.paligoapp.com/*"],
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://sitecore.paligoapp.com/*"],
+      "js": ["content.js"],
+      "css": ["style.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "rules/Sitecore/write-simply.yml",
+        "rules/Sitecore/desire.yml",
+        "pkg/vale_native_bg.wasm"
+      ],
+      "matches": ["https://sitecore.paligoapp.com/*"]
+    }
+  ]
+}

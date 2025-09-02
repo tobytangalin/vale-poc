@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vale Prototype Options</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <h1>Vale Prototype Settings</h1>
+  <form id="opts" aria-describedby="formHelp">
+    <p id="formHelp" style="position:absolute;left:-9999px;top:-9999px;">Configure Vale prototype behavior.</p>
+    <label><input type="checkbox" id="enabled" /> Enable on Paligo</label>
+    <div>
+      <label for="debounceBase">Base Debounce (ms): <span id="debounceValue"></span></label><br />
+      <input type="range" id="debounceBase" min="150" max="1200" step="50" />
+    </div>
+    <div>
+      <label for="sizeFactor">Size Factor (ms per 2k chars): <span id="sizeFactorVal"></span></label><br />
+      <input type="range" id="sizeFactor" min="0" max="800" step="50" />
+    </div>
+    <fieldset style="margin-top:1em; border:1px solid #ccc; padding:.5em 1em; max-width:320px;">
+      <legend>Show Severities</legend>
+      <label style="display:block"><input type="checkbox" id="sevError" /> Errors</label>
+      <label style="display:block"><input type="checkbox" id="sevWarning" /> Warnings</label>
+      <label style="display:block"><input type="checkbox" id="sevInfo" /> Info</label>
+      <small>Uncheck to hide that severity in the panel.</small>
+    </fieldset>
+    <button type="submit">Save</button>
+    <span id="status" role="status" aria-live="polite"></span>
+  </form>
+  <script src="options.js"></script>
+</body>
+</html>

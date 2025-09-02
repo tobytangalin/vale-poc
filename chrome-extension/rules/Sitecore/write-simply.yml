@@ -1,0 +1,52 @@
+extends: substitution
+message: Use '%s' instead of '%s'.
+level: warning
+ignorecase: true
+action:
+  name: replace
+swap:
+  ALT: Alt
+  CTRL: Ctrl
+  tool tip: tooltip
+  screen tip: tooltip
+  screentip: tooltip
+  touch screen: touchscreen
+  at the present time: now
+  at present: currently
+  at this time: today
+  attempt: try
+  by means of: by or with
+  commence: start
+  consequently: so
+  demonstrate: show
+  dimmed: unavailable
+  due to the fact that: because
+  enables you to: lets you or you can
+  firstly: first
+  for the purpose of: for
+  grayed out: unavailable
+  in actual fact: in fact (or better still, leave it out)
+  in case: if
+  in most cases: usually
+  in order to: to
+  in the event that: if
+  in the event of: if
+  is able to: can
+  is required to: must
+  on a daily basis: daily
+  on a yearly basis: yearly
+  on a regular basis: regularly
+  permit: let
+  persons: people
+  presently: soon or now
+  prior to: before
+  purchase: buy
+  regarding: about
+  secondly: second
+  should you wish: if you want
+  subsequently: later
+  sufficient: enough
+  thirdly: third
+  terminate: end
+  utilize: use
+  you have the possibility to: you can

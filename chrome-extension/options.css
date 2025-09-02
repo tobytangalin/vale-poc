@@ -1,0 +1,7 @@
+body { font: 14px/1.45 system-ui,Segoe UI,Arial,sans-serif; margin: 1.25rem; max-width: 640px; }
+h1 { font-size: 1.2rem; margin: 0 0 1rem; }
+form > div { margin: .9rem 0; }
+input[type=range] { width: 320px; }
+#status { margin-left: 1rem; font-weight: 600; }
+label { cursor: pointer; }
+button { padding: 4px 14px; }

@@ -1,0 +1,15 @@
+{
+  "name": "vale-poc-extension-build",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-extension.mjs",
+    "clean": "node scripts/build-extension.mjs --clean",
+  "zip": "node scripts/build-extension.mjs --zip",
+  "compare:wasm": "node scripts/compare-wasm.mjs",
+  "compare:wasm:mock": "node scripts/compare-wasm.mjs --mock",
+  "test": "node test/unit/content-utils.test.mjs"
+  },
+  "devDependencies": {}
+}
