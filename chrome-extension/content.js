@@ -3,7 +3,7 @@
 const log = (()=>{ const LEVELS={error:0,warn:1,info:2,debug:3}; let lvl='info'; try { if (/[?&]valeDebug=1/.test(location.search)) lvl='debug'; } catch{} const en=l=>LEVELS[l]<=LEVELS[lvl]; return { error:(...a)=>en('error')&&console.error('[vale]',...a), warn:(...a)=>en('warn')&&console.warn('[vale]',...a), info:(...a)=>en('info')&&console.info('[vale]',...a), debug:(...a)=>en('debug')&&console.debug('[vale]',...a) }; })();
 // Content script: watches active editable element and requests linting (IIFE isolated scope).
 let timer; let lastValue = '';
-const CONFIG_DEFAULTS = { enabled: true, debounceBase: 400, sizeFactor: 300, severity: { error:true, warning:true, suggestion:true, info:false } };
+const CONFIG_DEFAULTS = { enabled: true, debounceBase: 400, sizeFactor: 300, severity: { error:true, warning:true, suggestion:true } };
 let userConfig = { ...CONFIG_DEFAULTS };
 chrome.storage?.sync?.get && chrome.storage.sync.get(CONFIG_DEFAULTS, cfg => { userConfig = cfg; });
 chrome.storage?.onChanged?.addListener(changes => { for (const k in changes) userConfig[k] = changes[k].newValue; });
@@ -167,14 +167,13 @@ function rebuildDiagnosticsPanel(){
   const sevCfg = (userConfig.severity) ? {
     error: userConfig.severity.error !== false,
     warning: userConfig.severity.warning !== false,
-    suggestion: userConfig.severity.suggestion !== false,
-    info: !!userConfig.severity.info
+    suggestion: userConfig.severity.suggestion !== false
   } : CONFIG_DEFAULTS.severity;
   const filtered = entries.filter(e => {
     const lvl = (e.diag.level || e.diag.Level || e.diag.severity || e.diag.Severity || 'warning').toString().toLowerCase();
     if (lvl === 'error') return sevCfg.error;
     if (lvl === 'suggestion') return sevCfg.suggestion;
-    if (lvl === 'info') return sevCfg.info;
+  if (lvl === 'info') return false; // info suppressed (removed)
     return sevCfg.warning; // default bucket
   });
   panelState.entries = filtered; // navigation reflects filtered
@@ -196,7 +195,7 @@ function rebuildDiagnosticsPanel(){
       case 'error': iconChar='⛔'; iconColor='#ff5555'; break;
       case 'warning': iconChar='⚠️'; iconColor='#ffca28'; break;
       case 'suggestion': iconChar='💡'; iconColor='#ffd54f'; break;
-      case 'info': iconChar='ℹ️'; iconColor='#64b5f6'; break;
+  case 'info': iconChar=''; iconColor=''; break; // suppressed
       default: iconChar='•'; iconColor='#aaa';
     }
     const iconSpan = document.createElement('span');
@@ -288,8 +287,12 @@ function createDiagnosticsPanel(){
     persistPanel();
   });
   if (persistedPanelState.collapsed) {
-    list.style.display = 'none';
-    toggleBtn.textContent = '+';
+  // Override: always start expanded by default now.
+  // If user previously collapsed in an earlier session, we reset to expanded.
+  persistedPanelState.collapsed = false;
+  toggleBtn.textContent = '−';
+  list.style.display = 'block';
+  persistPanel();
   }
   // Simple drag to move
   let drag=false, sx=0, sy=0, startRight=0, startBottom=0;
@@ -311,8 +314,7 @@ function createDiagnosticsPanel(){
   const makeChk = (key, labelTxt, title) => {
     const wrap = document.createElement('label');
     Object.assign(wrap.style, { display:'flex', alignItems:'center', gap:'2px', cursor:'pointer' });
-    const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = userConfig.severity?.[key] !== false; // default true except info default false below
-    if (key==='info') cb.checked = !!userConfig.severity?.info; // honor default false
+  const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = userConfig.severity?.[key] !== false;
     cb.addEventListener('change', ()=>{
       const sev = { ...(userConfig.severity||CONFIG_DEFAULTS.severity) };
       sev[key] = cb.checked;
@@ -331,7 +333,6 @@ function createDiagnosticsPanel(){
   barItems.appendChild(makeChk('error','Err','Show errors'));
   barItems.appendChild(makeChk('warning','Warn','Show warnings'));
   barItems.appendChild(makeChk('suggestion','Sug','Show suggestions'));
-  barItems.appendChild(makeChk('info','Info','Show info messages'));
   const barTitle = document.createElement('span'); barTitle.textContent='Filter:'; barTitle.style.opacity='0.7';
   sevBar.appendChild(barTitle); sevBar.appendChild(barItems);
   panel.insertBefore(sevBar, panel.querySelector('.vale-panel-list'));
