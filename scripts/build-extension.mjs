@@ -101,7 +101,7 @@ fs.writeFileSync(path.join(distExt, 'manifest.json'), JSON.stringify(manifest, n
 // Zip packaging (auto unless --no-zip)
 let zipCreated = false;
 if (!disableZip) {
-  const zipName = `extension-${manifest.version}.zip`;
+  const zipName = 'extension.zip';
   const zipPath = path.join(distRoot, zipName);
   try { if (fs.existsSync(zipPath)) fs.rmSync(zipPath); } catch {}
   try {
