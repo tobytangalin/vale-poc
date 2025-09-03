@@ -71,13 +71,19 @@ if (domains[0] !== '<all_urls>') {
   }
 }
 const wasmFiles = [];
-const pkgDir = path.join(extSrc, 'pkg');
+// Locate wasm pkg artifacts: prefer chrome-extension/pkg, else fallback to vale-wasm/pkg (produced by wasm-pack)
+let pkgDir = path.join(extSrc, 'pkg');
+if (!fs.existsSync(pkgDir)) {
+  const alt = path.join(repoRoot, 'vale-wasm', 'pkg');
+  if (fs.existsSync(alt)) pkgDir = alt;
+}
 if (fs.existsSync(pkgDir)) {
   for (const f of fs.readdirSync(pkgDir)) {
     if (f.endsWith('.wasm')) wasmFiles.push('pkg/' + f);
   }
-  // Copy pkg directory
   copyRecursive(pkgDir, path.join(distExt, 'pkg'));
+} else {
+  console.warn('No WASM pkg directory found; build will fallback to JS rules only.');
 }
 manifest.web_accessible_resources = [
   {
