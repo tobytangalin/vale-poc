@@ -4,7 +4,7 @@
   "description": "Prototype: applies simplified Vale substitution rules to editable text.",
   "version": "0.1.0",
   "permissions": ["storage"],
-  "host_permissions": ["https://sitecore.paligoapp.com/*"],
+  "host_permissions": ["https://sitecore.paligoapp.com/document/edit/*"],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },
@@ -15,7 +15,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://sitecore.paligoapp.com/*"],
+      "matches": ["https://sitecore.paligoapp.com/document/edit/*"],
       "js": ["content.js"],
       "css": ["style.css"],
       "run_at": "document_idle"
@@ -28,7 +28,7 @@
         "rules/Sitecore/desire.yml",
         "pkg/vale_native_bg.wasm"
       ],
-      "matches": ["https://sitecore.paligoapp.com/*"]
+  "matches": ["https://sitecore.paligoapp.com/document/edit/*"]
     }
   ]
 }

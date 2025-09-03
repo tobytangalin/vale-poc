@@ -1,6 +1,13 @@
 (()=>{
 // Inline minimal logger (content script runs as classic script, cannot use static import reliably across all Chrome versions)
 const log = (()=>{ const LEVELS={error:0,warn:1,info:2,debug:3}; let lvl='info'; try { if (/[?&]valeDebug=1/.test(location.search)) lvl='debug'; } catch{} const en=l=>LEVELS[l]<=LEVELS[lvl]; return { error:(...a)=>en('error')&&console.error('[vale]',...a), warn:(...a)=>en('warn')&&console.warn('[vale]',...a), info:(...a)=>en('info')&&console.info('[vale]',...a), debug:(...a)=>en('debug')&&console.debug('[vale]',...a) }; })();
+// Scope guard: only activate on Paligo edit pages
+try {
+  if (!/\/document\/edit\//.test(location.pathname)) {
+    log.debug('Skipping Vale content script: not an edit page');
+    return; // abort entire IIFE
+  }
+} catch(_) {}
 // Content script: watches active editable element and requests linting (IIFE isolated scope).
 let timer; let lastValue = '';
 const CONFIG_DEFAULTS = { enabled: true, manualMode: false, debounceBase: 400, sizeFactor: 300, severity: { error:true, warning:true, suggestion:true } };
