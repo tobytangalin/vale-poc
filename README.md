@@ -87,7 +87,7 @@ Compress-Archive -Path dist/extension/* -DestinationPath extension-package.zip -
 The build script now automatically creates an archive in `dist/`:
 
 ```
-extension.zip (generated at repository root)
+[extension.zip](https://github.com/tobytangalin/vale-poc/blob/master/extension.zip)
 ```
 
 Current version: `0.1.0`  
