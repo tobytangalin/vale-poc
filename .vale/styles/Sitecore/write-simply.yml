@@ -5,8 +5,8 @@ ignorecase: true
 action:
   name: replace
 swap:
-  ALT: Alt
   CTRL: Ctrl
+  ALT: Alt
   tool tip: tooltip
   screen tip: tooltip
   screentip: tooltip

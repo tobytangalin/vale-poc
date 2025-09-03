@@ -701,13 +701,49 @@ setTimeout(()=>{
   }
 },2000);
 
+// Remove a single diagnostic from current panel state (optimistic UI update after Apply)
+function removeDiagnosticFromPanelState(entry){
+  if (!entry || !entry.diag || !entry.el) return;
+  const diag = entry.diag;
+  if (entry.source === 'block') {
+    const arr = panelState.paligo.get(entry.el);
+    if (arr) {
+      const i = arr.indexOf(diag); if (i > -1) arr.splice(i,1);
+      if (!arr.length) panelState.paligo.delete(entry.el);
+    }
+  } else if (entry.source === 'input') {
+    const arr = panelState.inputs.get(entry.el);
+    if (arr) {
+      const i = arr.indexOf(diag); if (i > -1) arr.splice(i,1);
+      if (!arr.length) panelState.inputs.delete(entry.el);
+    }
+  } else if (entry.source === 'contentEditable') {
+    if (panelState.genericCE && panelState.genericCE.el === entry.el) {
+      const arr = panelState.genericCE.diags;
+      const i = arr.indexOf(diag); if (i > -1) arr.splice(i,1);
+      if (!arr.length) panelState.genericCE = null;
+    }
+  }
+}
+
 function applyReplacement(entry){
   const d = entry.diag; if (!d || typeof d.start !== 'number' || typeof d.end !== 'number' || !d.replacement) return;
   const target = entry.el; if (!target) return;
   const repl = d.replacement;
   if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
     const val = target.value; target.value = val.slice(0,d.start) + repl + val.slice(d.end);
-    lastValue=''; target.dispatchEvent(new Event('input',{bubbles:true})); safeSchedule(target.value.length); return;
+    lastValue='';
+    // Fire input so any upstream listeners react
+    target.dispatchEvent(new Event('input',{bubbles:true}));
+    // Optimistically remove this diagnostic from panel state & refresh list immediately
+    removeDiagnosticFromPanelState(entry);
+    schedulePanelUpdate();
+    // Ensure focus stays on edited element (Apply button stole it)
+    try { target.focus(); } catch {}
+    // Force or schedule re-lint so new text produces updated diagnostics
+    if (userConfig.manualMode) { lastValue=''; runLint({ force:true }); }
+    else safeSchedule(target.value.length);
+    return;
   }
   if (target.isContentEditable) {
     // Use selection cache approach
@@ -718,7 +754,15 @@ function applyReplacement(entry){
     if (sNode && !eNode){ eNode=sNode; eOff=sNode.nodeValue.length; }
     if (!sNode || !eNode) return;
     const rng=document.createRange(); try { rng.setStart(sNode,sOff); rng.setEnd(eNode,eOff); } catch { return; }
-    rng.deleteContents(); rng.insertNode(document.createTextNode(repl)); lastValue=''; safeSchedule(target.textContent.length);
+    rng.deleteContents(); rng.insertNode(document.createTextNode(repl));
+    lastValue='';
+    // Optimistic removal & refresh
+    removeDiagnosticFromPanelState(entry);
+    schedulePanelUpdate();
+    // Refocus edited region (restore selection after applying text)
+    try { target.focus({ preventScroll:true }); } catch {}
+    if (userConfig.manualMode) { lastValue=''; runLint({ force:true }); }
+    else safeSchedule(target.textContent.length);
   }
 }
 // End of IIFE body
