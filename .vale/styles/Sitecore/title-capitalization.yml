@@ -1,0 +1,14 @@
+extends: capitalization
+message: "'%s' should use sentence-style capitalization."
+level: warning
+scope: heading
+match: $sentence
+indicators:
+  - ':'
+exceptions:
+  - Sitecore
+  - Forms
+  - KeyValueMapping
+  - UI
+  - API
+  # Add other proper nouns and technical terms as needed

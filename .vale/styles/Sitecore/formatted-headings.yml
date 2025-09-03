@@ -1,0 +1,24 @@
+extends: existence
+message: "Remove formatting (bold, italics, code) from headings."
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '# .*\*\*[^*]+\*\*.*'     # H1 with bold
+  - '## .*\*\*[^*]+\*\*.*'    # H2 with bold  
+  - '### .*\*\*[^*]+\*\*.*'   # H3 with bold
+  - '#### .*\*\*[^*]+\*\*.*'  # H4 with bold
+  - '##### .*\*\*[^*]+\*\*.*' # H5 with bold
+  - '###### .*\*\*[^*]+\*\*.*' # H6 with bold
+  - '# .*\*[^*]+\*.*'         # H1 with italics
+  - '## .*\*[^*]+\*.*'        # H2 with italics
+  - '### .*\*[^*]+\*.*'       # H3 with italics
+  - '#### .*\*[^*]+\*.*'      # H4 with italics
+  - '##### .*\*[^*]+\*.*'     # H5 with italics
+  - '###### .*\*[^*]+\*.*'    # H6 with italics
+  - '# .*`[^`]+`.*'           # H1 with code
+  - '## .*`[^`]+`.*'          # H2 with code
+  - '### .*`[^`]+`.*'         # H3 with code
+  - '#### .*`[^`]+`.*'        # H4 with code
+  - '##### .*`[^`]+`.*'       # H5 with code
+  - '###### .*`[^`]+`.*'      # H6 with code
