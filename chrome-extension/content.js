@@ -12,7 +12,19 @@ try {
 let timer; let lastValue = '';
 const CONFIG_DEFAULTS = { enabled: true, manualMode: false, debounceBase: 400, sizeFactor: 300, severity: { error:true, warning:true, suggestion:true } };
 let userConfig = { ...CONFIG_DEFAULTS };
-chrome.storage?.sync?.get && chrome.storage.sync.get(CONFIG_DEFAULTS, cfg => { userConfig = { ...CONFIG_DEFAULTS, ...cfg }; });
+// Safe wrappers for chrome.storage operations to avoid uncaught 'Extension context invalidated' errors
+function safeStorageGet(defaults, cb){
+  try {
+    if (chrome?.storage?.sync?.get) chrome.storage.sync.get(defaults, cfg => { try { cb && cb(cfg); } catch(e){} });
+  } catch (e) {
+    if (/Extension context invalidated/i.test(e.message||'')) { extensionInvalidated = true; startRuntimeRecovery(); }
+  }
+}
+function safeStorageSet(obj){
+  try { if (chrome?.storage?.sync?.set) chrome.storage.sync.set(obj); }
+  catch(e){ if (/Extension context invalidated/i.test(e.message||'')) { extensionInvalidated = true; startRuntimeRecovery(); } }
+}
+safeStorageGet(CONFIG_DEFAULTS, cfg => { userConfig = { ...CONFIG_DEFAULTS, ...cfg }; });
 chrome.storage?.onChanged?.addListener(changes => {
   const prevManual = userConfig.manualMode;
   for (const k in changes) userConfig[k] = changes[k].newValue;
@@ -196,7 +208,7 @@ function rebuildDiagnosticsPanel(){
   });
   panelState.entries = filtered; // navigation reflects filtered
 
-  if (!entries.length && !runtimeFailure){ if (panelState.panelEl) panelState.panelEl.style.display='none'; return; }
+  // Always keep panel visible (even with zero issues) so user sees the result of a manual lint.
   if (!panelState.panelEl) createDiagnosticsPanel();
   const panel = panelState.panelEl; panel.style.display='flex';
   const listEl = panel.querySelector('.vale-panel-list');
@@ -243,6 +255,12 @@ function rebuildDiagnosticsPanel(){
     item.setAttribute('role','button'); item.tabIndex=-1;
     listEl.appendChild(item);
   });
+  if (filtered.length === 0) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'padding:6px; opacity:0.65; font-style:italic;';
+    empty.textContent = 'No issues found';
+    listEl.appendChild(empty);
+  }
   if (filtered.length > MAX) {
     const remain = filtered.length - MAX;
     const trunc = document.createElement('div');
@@ -269,13 +287,13 @@ function rebuildDiagnosticsPanel(){
 
 // Load persisted panel UI state
 let persistedPanelState = { right: 12, bottom: 12, collapsed: false };
-chrome.storage?.sync?.get && chrome.storage.sync.get({ _valePanel: persistedPanelState }, data => {
+safeStorageGet({ _valePanel: persistedPanelState }, data => {
   if (data && data._valePanel) persistedPanelState = { ...persistedPanelState, ...data._valePanel };
   // panelState.theme = persistedPanelState.theme || 'system'; // Theme support removed per request
 });
 
 function persistPanel(){
-  chrome.storage?.sync?.set && chrome.storage.sync.set({ _valePanel: persistedPanelState });
+  safeStorageSet({ _valePanel: persistedPanelState });
 }
 
 // (Theme support removed per request)
@@ -361,7 +379,7 @@ function createDiagnosticsPanel(){
       const sev = { ...(userConfig.severity||CONFIG_DEFAULTS.severity) };
       sev[key] = cb.checked;
       userConfig.severity = sev;
-      chrome.storage?.sync?.set && chrome.storage.sync.set({ severity: sev });
+  safeStorageSet({ severity: sev });
       // Just rebuild panel client-side; no need to re-lint
       schedulePanelUpdate();
     });
