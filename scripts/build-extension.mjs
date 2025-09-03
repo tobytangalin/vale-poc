@@ -102,7 +102,8 @@ fs.writeFileSync(path.join(distExt, 'manifest.json'), JSON.stringify(manifest, n
 let zipCreated = false;
 if (!disableZip) {
   const zipName = 'extension.zip';
-  const zipPath = path.join(distRoot, zipName);
+  // Place archive at repo root so it's immediately visible for download
+  const zipPath = path.join(repoRoot, zipName);
   try { if (fs.existsSync(zipPath)) fs.rmSync(zipPath); } catch {}
   try {
     if (process.platform === 'win32') {
