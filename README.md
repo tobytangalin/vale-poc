@@ -82,6 +82,39 @@ npm run build
 Compress-Archive -Path dist/extension/* -DestinationPath extension-package.zip -Force
 ```
 
+### Download Pre-built Zip
+
+The build script now automatically creates a versioned archive in `dist/`:
+
+```
+dist/extension-<version>.zip
+```
+
+Current version: `0.1.0`  
+Last build date (UTC): 2025-09-03
+
+Download options:
+
+1. Push the commit containing the generated zip (kept in `dist/`). On GitHub, browse to `dist/` and click `extension-0.1.0.zip` -> Download.
+2. (Recommended) Attach the zip to a GitHub Release for easier distribution.
+
+Example release tagging:
+
+```powershell
+git tag -a v0.1.0 -m "v0.1.0"
+git push origin v0.1.0
+# Then draft a Release for tag v0.1.0 and upload dist/extension-0.1.0.zip
+```
+
+Install from the zip:
+
+1. Extract `extension-0.1.0.zip` to a folder.
+2. Open `chrome://extensions`.
+3. Enable Developer Mode.
+4. Click "Load unpacked" and select the extracted folder.
+
+If you prefer not to commit the zip, run `npm run build -- --no-zip` locally and create one manually. Committing it makes it easy for non-technical users to grab the latest build without running Node.
+
 #### Restrict to a Specific Domain
 
 To inject only on `https://sitecore.paligoapp.com/` (and its paths):

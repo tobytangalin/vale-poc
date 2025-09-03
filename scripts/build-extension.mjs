@@ -4,7 +4,8 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import zlib from 'zlib';
+import zlib from 'zlib'; // (unused now, retained in case future compression enhancements needed)
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,7 +18,8 @@ const distExt = path.join(distRoot, 'extension');
 const args = process.argv.slice(2);
 const doClean = args.includes('--clean');
 const doRebuild = args.includes('--rebuild');
-const doZip = args.includes('--zip');
+// Always produce a zip unless explicitly disabled with --no-zip
+const disableZip = args.includes('--no-zip');
 const domainArg = args.find(a => a.startsWith('--domain='));
 const domains = domainArg ? [domainArg.split('=')[1].replace(/"/g,'').replace(/\/$/,'') + '/*'] : ['<all_urls>'];
 
@@ -96,12 +98,35 @@ manifest.web_accessible_resources = [
 ];
 fs.writeFileSync(path.join(distExt, 'manifest.json'), JSON.stringify(manifest, null, 2));
 
-// Optional zip packaging
-if (doZip) {
+// Zip packaging (auto unless --no-zip)
+let zipCreated = false;
+if (!disableZip) {
   const zipName = `extension-${manifest.version}.zip`;
-  // Simple naive zip via JS not trivial; rely on system zip if available.
-  // We'll just note next steps instead of implementing streaming zip here to keep script dependency-free.
-  console.log(`Run: powershell Compress-Archive -Path \"${distExt}/*\" -DestinationPath ${zipName}`);
+  const zipPath = path.join(distRoot, zipName);
+  try { if (fs.existsSync(zipPath)) fs.rmSync(zipPath); } catch {}
+  try {
+    if (process.platform === 'win32') {
+      // Use PowerShell Compress-Archive for Windows
+      const psCmd = `Compress-Archive -Path '${distExt.replace(/'/g,"''")}\\*' -DestinationPath '${zipPath.replace(/'/g,"''")}' -Force`;
+      execSync(`powershell -NoLogo -NoProfile -Command "${psCmd}"`, { stdio: 'inherit' });
+      zipCreated = fs.existsSync(zipPath);
+    } else {
+      // Attempt to use `zip` CLI on *nix systems
+      try {
+        execSync(`zip -r -q '${zipPath.replace(/'/g,"'\\''")}' .`, { cwd: distExt, stdio: 'inherit', shell: '/bin/bash' });
+        zipCreated = fs.existsSync(zipPath);
+      } catch (e) {
+        console.warn('zip command not available; skipping archive creation.');
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to create zip archive:', e.message);
+  }
+  if (zipCreated) {
+    console.log(`Created ${zipPath}`);
+  } else if (!disableZip) {
+    console.log('Zip archive not created (see warnings above).');
+  }
 }
 
-console.log(`Built extension with ${ruleFiles.length} rule files.`);
+console.log(`Built extension with ${ruleFiles.length} rule files.${zipCreated ? ' (zip packaged)' : ''}`);
