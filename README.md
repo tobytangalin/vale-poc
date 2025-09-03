@@ -87,7 +87,7 @@ Compress-Archive -Path dist/extension/* -DestinationPath extension-package.zip -
 The build script now automatically creates an archive in `dist/`:
 
 ```
-dist/extension.zip
+extension.zip (generated at repository root)
 ```
 
 Current version: `0.1.0`  
@@ -95,7 +95,7 @@ Last build date (UTC): 2025-09-03
 
 Download options:
 
-1. Push the commit containing the generated zip (kept in `dist/`). On GitHub, browse to `dist/` and click `extension.zip` -> Download.
+1. Push the commit containing the generated zip (now at repo root). On GitHub, it will appear as `extension.zip` in the file list -> Download.
 2. (Recommended) Attach the zip to a GitHub Release for easier distribution.
 
 Example release tagging:
@@ -103,7 +103,7 @@ Example release tagging:
 ```powershell
 git tag -a v0.1.0 -m "v0.1.0"
 git push origin v0.1.0
-# Then draft a Release for tag v0.1.0 and upload dist/extension.zip
+# Then draft a Release for tag v0.1.0 and upload extension.zip
 ```
 
 Install from the zip:
