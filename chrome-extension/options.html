@@ -9,7 +9,8 @@
   <h1>Vale Prototype Settings</h1>
   <form id="opts" aria-describedby="formHelp">
     <p id="formHelp" style="position:absolute;left:-9999px;top:-9999px;">Configure Vale prototype behavior.</p>
-    <label><input type="checkbox" id="enabled" /> Enable on Paligo</label>
+  <label><input type="checkbox" id="enabled" /> Enable on Paligo</label>
+  <label style="display:block;margin-top:.5em"><input type="checkbox" id="manualMode" /> Manual mode (only run when clicking Lint)</label>
     <div>
       <label for="debounceBase">Base Debounce (ms): <span id="debounceValue"></span></label><br />
       <input type="range" id="debounceBase" min="150" max="1200" step="50" />

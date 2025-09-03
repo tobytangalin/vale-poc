@@ -3,10 +3,21 @@
 const log = (()=>{ const LEVELS={error:0,warn:1,info:2,debug:3}; let lvl='info'; try { if (/[?&]valeDebug=1/.test(location.search)) lvl='debug'; } catch{} const en=l=>LEVELS[l]<=LEVELS[lvl]; return { error:(...a)=>en('error')&&console.error('[vale]',...a), warn:(...a)=>en('warn')&&console.warn('[vale]',...a), info:(...a)=>en('info')&&console.info('[vale]',...a), debug:(...a)=>en('debug')&&console.debug('[vale]',...a) }; })();
 // Content script: watches active editable element and requests linting (IIFE isolated scope).
 let timer; let lastValue = '';
-const CONFIG_DEFAULTS = { enabled: true, debounceBase: 400, sizeFactor: 300, severity: { error:true, warning:true, suggestion:true } };
+const CONFIG_DEFAULTS = { enabled: true, manualMode: false, debounceBase: 400, sizeFactor: 300, severity: { error:true, warning:true, suggestion:true } };
 let userConfig = { ...CONFIG_DEFAULTS };
-chrome.storage?.sync?.get && chrome.storage.sync.get(CONFIG_DEFAULTS, cfg => { userConfig = cfg; });
-chrome.storage?.onChanged?.addListener(changes => { for (const k in changes) userConfig[k] = changes[k].newValue; });
+chrome.storage?.sync?.get && chrome.storage.sync.get(CONFIG_DEFAULTS, cfg => { userConfig = { ...CONFIG_DEFAULTS, ...cfg }; });
+chrome.storage?.onChanged?.addListener(changes => {
+  const prevManual = userConfig.manualMode;
+  for (const k in changes) userConfig[k] = changes[k].newValue;
+  if (prevManual !== userConfig.manualMode) {
+    if (userConfig.manualMode) {
+      if (!panelState.panelEl) createDiagnosticsPanel();
+    } else if (userConfig.enabled) {
+      initialKick('manualMode-disabled');
+    }
+    updateRunButtonUI();
+  }
+});
 // Forward declarations for flags referenced early.
 var extensionInvalidated = false; // will be reused/reassigned later in safe messaging section
 var loggedInvalidation = false;
@@ -38,7 +49,7 @@ function schedule(targetLen) { clearTimeout(timer); timer = setTimeout(runLint, 
 // Backoff-aware scheduling wrapper that tolerates extension context invalidation.
 let backoffMs = 0; let backoffTimer = null; let nextAttempt = 0;
 function safeSchedule(targetLen) {
-  if (!userConfig.enabled) return; // respect enabled flag
+  if (!userConfig.enabled || userConfig.manualMode) return; // respect enabled flag & manual mode suppression
   if (extensionInvalidated) {
     const now = Date.now();
     if (now < nextAttempt) return; // still waiting
@@ -56,8 +67,8 @@ function safeSchedule(targetLen) {
   schedule(targetLen);
 }
 
-function runLint() {
-  if (!userConfig.enabled) return;
+function runLint({ force=false }={}) {
+  if ((!userConfig.enabled || userConfig.manualMode) && !force) return;
   // Paligo root detection
   const paligoRoot = detectPaligoRoot();
   if (paligoRoot && document.activeElement === paligoRoot) {
@@ -93,12 +104,12 @@ document.addEventListener('keyup', (e) => {
   if (NON_TEXT_CHANGE_KEYS.has(e.key)) return;
   // If modifiers are held (except Shift which is already filtered) we skip.
   if (e.ctrlKey || e.altKey || e.metaKey) return;
-  if (!userConfig.enabled) return;
+  if (!userConfig.enabled || userConfig.manualMode) return;
   const txt = currentText();
   if (txt === lastValue) return; // No textual change since last lint.
   safeSchedule(txt.length);
 }, true);
-document.addEventListener('focus', e=>{ if (getEditableElement()) safeSchedule(); }, true);
+document.addEventListener('focus', e=>{ if (getEditableElement() && !userConfig.manualMode) safeSchedule(); }, true);
 
 // ===== Input/Textarea handling =====
 function handleInputDiagnostics(el, diags) {
@@ -265,7 +276,7 @@ function persistPanel(){
 function createDiagnosticsPanel(){
   const panel = document.createElement('div');
   panel.className = 'vale-diagnostics-panel';
-  panel.innerHTML = `\n    <div class="vale-panel-header">\n      <span class="vale-panel-title">Vale</span>\n      <span class="vale-panel-count">0</span>\n      <button class="vale-panel-toggle" title="Collapse">−</button>\n    </div>\n    <div class="vale-panel-list"></div>\n  `;
+  panel.innerHTML = `\n    <div class="vale-panel-header">\n      <span class="vale-panel-title">Vale</span>\n      <span class="vale-panel-count">0</span>\n      <button class="vale-panel-run" title="Run manual lint now" style="margin-left:auto;">Lint</button>\n      <button class="vale-panel-toggle" title="Collapse">−</button>\n    </div>\n    <div class="vale-panel-list"></div>\n  `;
   Object.assign(panel.style, {
     position:'fixed', right: persistedPanelState.right + 'px', bottom: persistedPanelState.bottom + 'px', width:'280px', maxHeight:'40vh',
     background:'rgba(32,32,36,0.90)', color:'#fff', font:'12px/1.4 sans-serif',
@@ -278,7 +289,30 @@ function createDiagnosticsPanel(){
   Object.assign(header.style, { display:'flex', alignItems:'center', gap:'8px', padding:'4px 6px', cursor:'move' });
   header.querySelector('.vale-panel-title').style.fontWeight='600';
   const toggleBtn = header.querySelector('.vale-panel-toggle');
-  Object.assign(toggleBtn.style, { marginLeft:'auto', background:'transparent', color:'#fff', border:'none', cursor:'pointer', fontSize:'14px' });
+  const runBtn = header.querySelector('.vale-panel-run');
+  Object.assign(toggleBtn.style, { background:'transparent', color:'#fff', border:'none', cursor:'pointer', fontSize:'14px' });
+  // Enhanced Lint button styling
+  Object.assign(runBtn.style, {
+    background: 'linear-gradient(135deg,#2563eb,#1d4ed8)',
+    color: '#fff',
+    border: '1px solid #1e3a8a',
+    borderRadius: '999px',
+    padding: '3px 12px 4px',
+    fontSize: '11px',
+    fontWeight: '600',
+    letterSpacing: '.5px',
+    fontFamily: 'inherit',
+    cursor: 'pointer',
+    lineHeight: '1.1',
+    transition: 'background .18s, box-shadow .18s, transform .15s',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.25), inset 0 0 0 0 rgba(255,255,255,0.15)'
+  });
+  runBtn.addEventListener('mouseenter', () => { if (runBtn.disabled) return; runBtn.style.background = 'linear-gradient(135deg,#1d4ed8,#1e40af)'; });
+  runBtn.addEventListener('mouseleave', () => { if (runBtn.disabled) return; runBtn.style.background = 'linear-gradient(135deg,#2563eb,#1d4ed8)'; });
+  runBtn.addEventListener('mousedown', () => { if (runBtn.disabled) return; runBtn.style.transform = 'translateY(1px)'; });
+  runBtn.addEventListener('mouseup', () => { runBtn.style.transform = 'translateY(0)'; });
+  runBtn.addEventListener('focus', () => { runBtn.style.boxShadow = '0 0 0 2px #fff, 0 0 0 4px rgba(37,99,235,0.7)'; });
+  runBtn.addEventListener('blur', () => { runBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.25), inset 0 0 0 0 rgba(255,255,255,0.15)'; });
   toggleBtn.addEventListener('click', () => {
     const listVisible = list.style.display !== 'none';
     list.style.display = listVisible ? 'none' : 'block';
@@ -286,6 +320,7 @@ function createDiagnosticsPanel(){
     persistedPanelState.collapsed = !listVisible;
     persistPanel();
   });
+  runBtn.addEventListener('click', () => { if (!manualRunPending) manualFullLint(); });
   if (persistedPanelState.collapsed) {
   // Override: always start expanded by default now.
   // If user previously collapsed in an earlier session, we reset to expanded.
@@ -336,6 +371,61 @@ function createDiagnosticsPanel(){
   const barTitle = document.createElement('span'); barTitle.textContent='Filter:'; barTitle.style.opacity='0.7';
   sevBar.appendChild(barTitle); sevBar.appendChild(barItems);
   panel.insertBefore(sevBar, panel.querySelector('.vale-panel-list'));
+  updateRunButtonUI();
+}
+
+// Manual mode trigger: lint active element or all Paligo blocks on demand.
+let manualRunPending = false;
+function manualFullLint(){
+  if (!userConfig.enabled) return;
+  manualRunPending = true; updateRunButtonUI();
+  panelState.paligo.clear(); panelState.inputs.clear(); panelState.genericCE = null; panelState.entries = []; schedulePanelUpdate();
+  const root = detectPaligoRoot();
+  if (root) {
+    // Collect all blocks and send batch lint.
+    const blocks = [...root.querySelectorAll(paligoSelective.blockSelector)];
+    const texts = blocks.map(b => b.textContent || '');
+    // Filter empties to reduce traffic but maintain index alignment by keeping placeholders
+    safeSendMessage({ type: 'LINT_BLOCKS', texts }, resp => {
+      if (resp && Array.isArray(resp.results)) {
+        resp.results.forEach((diags, i) => {
+          const el = blocks[i]; if (!el) return; registerPaligoDiagnostics(el, diags || []);
+        });
+      }
+      manualRunPending = false; updateRunButtonUI();
+    });
+    return;
+  }
+  // Fallback: active editable only.
+  const el = getEditableElement();
+  if (!el) { schedulePanelUpdate(); return; }
+  lastValue='';
+  if (el.isContentEditable) {
+    const text = el.textContent || '';
+    safeSendMessage({ type: 'LINT', text }, resp => { if (resp) recordActiveContentEditableDiagnostics(resp.diagnostics); manualRunPending=false; updateRunButtonUI(); });
+  } else {
+    const text = el.value || '';
+    safeSendMessage({ type: 'LINT', text }, resp => { if (resp) recordActiveContentEditableDiagnostics(resp.diagnostics); manualRunPending=false; updateRunButtonUI(); });
+  }
+}
+
+function updateRunButtonUI(){
+  if (!panelState.panelEl) return;
+  const btn = panelState.panelEl.querySelector('.vale-panel-run');
+  if (!btn) return;
+  const manual = !!userConfig.manualMode;
+  btn.style.display = manual ? 'inline-block' : 'none';
+  if (manualRunPending) {
+    btn.disabled = true;
+    btn.textContent = 'Linting…';
+    btn.style.opacity = '0.75';
+    btn.style.cursor = 'wait';
+  } else {
+    btn.disabled = false;
+  btn.textContent = 'Lint';
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
 }
 
 function panelKeyHandler(e){
@@ -580,6 +670,10 @@ document.addEventListener('visibilitychange', () => {
 // ---- Initial kick & fallback to mitigate missing panel after refresh ----
 function initialKick(reason){
   if (!userConfig.enabled) return;
+  if (userConfig.manualMode) { // In manual mode just ensure panel exists with button.
+    if (!panelState.panelEl) createDiagnosticsPanel();
+    return;
+  }
   log.debug('initialKick', reason);
   const root = detectPaligoRoot();
   if (root) { paligoSelective.init(root); paligoSelective.schedule(); return; }

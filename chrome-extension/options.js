@@ -1,10 +1,11 @@
-const defaults = { enabled: true, debounceBase: 400, sizeFactor: 300, severity: { error: true, warning: true, info: false } };
+const defaults = { enabled: true, manualMode: false, debounceBase: 400, sizeFactor: 300, severity: { error: true, warning: true, info: false } };
 const LIMITS = { debounceBase: { min:150, max:2000 }, sizeFactor: { min:0, max:1000 } };
 
 function load() {
   chrome.storage.sync.get(defaults, cfg => {
     document.getElementById('enabled').checked = cfg.enabled;
-    document.getElementById('debounceBase').value = cfg.debounceBase;
+  document.getElementById('manualMode').checked = cfg.manualMode;
+  document.getElementById('debounceBase').value = cfg.debounceBase;
     document.getElementById('sizeFactor').value = cfg.sizeFactor;
     document.getElementById('debounceValue').textContent = cfg.debounceBase;
     document.getElementById('sizeFactorVal').textContent = cfg.sizeFactor;
@@ -22,7 +23,8 @@ function save(e){
   sizeFactor = Math.min(LIMITS.sizeFactor.max, Math.max(LIMITS.sizeFactor.min, sizeFactor));
   const cfg = {
     enabled: document.getElementById('enabled').checked,
-    debounceBase,
+  debounceBase,
+  manualMode: document.getElementById('manualMode').checked,
     sizeFactor,
     severity: {
       error: document.getElementById('sevError').checked,
